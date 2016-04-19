@@ -1,0 +1,24 @@
+{
+  "name": "cookie-encrypter",
+  "version": "0.0.1",
+  "description": "cookie encryption",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ebourmalo/cookie-encrypter.git"
+  },
+  "keywords": [
+    "cookie",
+    "encryption",
+    "middleware"
+  ],
+  "author": "Emmanuel Bourmalo <emmanuel.bourmalo@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ebourmalo/cookie-encrypter/issues"
+  },
+  "homepage": "https://github.com/ebourmalo/cookie-encrypter#readme"
+}
