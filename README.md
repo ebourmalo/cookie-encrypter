@@ -65,7 +65,7 @@ app.get('/setcookies', function(req, res) {
 })
 
 app.get('/getcookies', function(req, res) {
-  console.log("Decrypted cookies: ", req.cookies)
+  console.log("Decrypted cookies: ", req.signedCookies)
 });
 
 app.listen(8080);
