@@ -73,8 +73,6 @@ function decryptCookies(obj, options) {
       continue;
     }
 
-    console.log(key + ' decrypted value: ' + val);
-
     if (val) {
       obj[key] = JSONCookie(val);
     }
