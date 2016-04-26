@@ -1,6 +1,6 @@
 {
   "name": "cookie-encrypter",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "cookie encryption",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,10 @@
   "keywords": [
     "cookie",
     "encryption",
-    "middleware"
+    "middleware",
+    "encrypt",
+    "cookie-encrypt",
+    "cookie-encryption"
   ],
   "author": "Emmanuel Bourmalo <emmanuel.bourmalo@gmail.com>",
   "license": "ISC",
