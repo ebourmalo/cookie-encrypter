@@ -1,6 +1,6 @@
 {
   "name": "cookie-encrypter",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "cookie encryption",
   "main": "index.js",
   "scripts": {
