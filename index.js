@@ -90,13 +90,13 @@ function decryptCookies(obj, options) {
  */
 function JSONCookie(str) {
   if (typeof str !== 'string' || str.substr(0, 2) !== 'j:') {
-    return undefined;
+    return str;
   }
 
   try {
     return JSON.parse(str.slice(2));
   } catch (err) {
-    return undefined;
+    return str;
   }
 }
 
