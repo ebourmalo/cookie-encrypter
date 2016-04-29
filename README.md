@@ -1,4 +1,4 @@
-# cookie-encrypter
+# encrypt/decrypt your cookie the easy way
 
 Express middleware to use with [cookie-parser](https://github.com/expressjs/cookie-parser).
 Transparently encrypt and decrypt cookies with `req.cookies` (populated by cookie-parser).
