@@ -1,9 +1,11 @@
-# encrypt/decrypt your cookie the easy way
+# [cookie-encrypter](https://github.com/ebourmalo/cookie-encrypter)
 
-Express middleware to use with [cookie-parser](https://github.com/expressjs/cookie-parser).
-Transparently encrypt and decrypt cookies with `req.cookies` (populated by cookie-parser).
-Support all cookies (including http-only and signed) with string content or JSON.
-Use `aes256` as the default encryption algorithm.
+[![npm](https://img.shields.io/npm/v/cookie-encrypter.svg?maxAge=2592000)](https://www.npmjs.com/package/cookie-encrypter)
+[![npm](https://img.shields.io/npm/dm/cookie-encrypter.svg?maxAge=2592000)](https://www.npmjs.com/package/cookie-encrypter)
+
+Transparently encrypt/decrypt your cookie using an express middleware to set after the  [cookie-parser](https://github.com/expressjs/cookie-parser).
+Support all type of cookie (including http-only and signed) with string content or JSON.
+Use `aes256` as the default encryption algorithm (internally use the nodejs [crypto](https://nodejs.org/api/crypto.html) module).
 
 ## Installation
 
