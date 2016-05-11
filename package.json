@@ -1,7 +1,7 @@
 {
   "name": "cookie-encrypter",
-  "version": "0.1.0",
-  "description": "cookie encryption",
+  "version": "0.1.1",
+  "description": "Transparently encrypt/decrypt your cookie with Nodejs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
