@@ -1,6 +1,6 @@
 {
   "name": "cookie-encrypter",
-  "version": "0.1.2",
+  "version": "0.1.1",
   "description": "Transparently encrypt/decrypt your cookie with Nodejs",
   "main": "index.js",
   "scripts": {
