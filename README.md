@@ -59,3 +59,8 @@ Encrypt a cookie value and return it. An `options.algorithm` can optionaly be pa
 ### cookieEncrypter.decryptCookie(str, options)
 
 Decrypt a cookie value and return it. An `options.algorithm` can optionaly be passed to specify an algorithm to use for the decryption.
+
+
+## CHANGELOG
+
+[See the changelog](https://github.com/ebourmalo/cookie-encrypter/blob/master/CHANGELOG.md)
