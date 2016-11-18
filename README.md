@@ -1,7 +1,7 @@
 # [cookie-encrypter](https://github.com/ebourmalo/cookie-encrypter)
 
-[![npm](https://img.shields.io/npm/v/cookie-encrypter.svg?maxAge=2592000)](https://www.npmjs.com/package/cookie-encrypter)
-[![npm](https://img.shields.io/npm/dm/cookie-encrypter.svg?maxAge=2592000)](https://www.npmjs.com/package/cookie-encrypter)
+[![npm](https://img.shields.io/npm/v/cookie-encrypter.svg)](https://www.npmjs.com/package/cookie-encrypter)
+[![npm](https://img.shields.io/npm/dm/cookie-encrypter.svg)](https://www.npmjs.com/package/cookie-encrypter)
 
 Transparently encrypt/decrypt your cookie using an express middleware to set after the  [cookie-parser](https://github.com/expressjs/cookie-parser).
 Support all type of cookie (including http-only and signed) with string content or JSON.
