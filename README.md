@@ -25,12 +25,12 @@ app.get('/setcookies', function(req, res) {
   };
 
   // Set encrypted cookies
-  res.cookie('supercookie', 'my data is encrypted', cookieParams);
+  res.cookie('supercookie', 'my text is encrypted', cookieParams);
   res.cookie('supercookie2', { myData: 'is encrypted' }, cookieParams);
 
   // You can still set plain cookies
-  res.cookie('plaincookie', 'my data is encrypted', { plain: true });
-  res.cookie('plaincookie2', { myData: 'is encrypted' }, { plain: true });
+  res.cookie('plaincookie', 'my text is plain', { plain: true });
+  res.cookie('plaincookie2', { myData: 'is plain' }, { plain: true });
 
   res.end('new cookies set');
 })
