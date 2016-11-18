@@ -17,6 +17,15 @@ $ npm install cookie-encrypter
 
 Easy to use:
 ```js
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const cookieEncrypter = require('./cook');
+const app = express();
+const secretKey = 'foobarbaz12345';
+
+app.use(cookieParser(secretKey));
+app.use(cookieEncrypter(secretKey));
+
 app.get('/setcookies', function(req, res) {
   const cookieParams = {
     httpOnly: true,

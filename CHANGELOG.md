@@ -1,3 +1,8 @@
+v0.2.3 / 2016-11-18
+===================
+
+  * Update README and add example for both cases (encrypted cookies and plain cookies)
+
 v0.2.0 / 2016-11-18
 ===================
 
