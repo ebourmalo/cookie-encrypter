@@ -13,6 +13,37 @@ Use `aes256` as the default encryption algorithm (internally use the nodejs [cry
 $ npm install cookie-encrypter
 ```
 
+## Example
+
+Easy to use:
+```js
+app.get('/setcookies', function(req, res) {
+  const cookieParams = {
+    httpOnly: true,
+    signed: true,
+    maxAge: 300000,
+  };
+
+  // Set encrypted cookies
+  res.cookie('supercookie', 'my data is encrypted', cookieParams);
+  res.cookie('supercookie2', { myData: 'is encrypted' }, cookieParams);
+
+  // You can still set plain cookies
+  res.cookie('plaincookie', 'my data is encrypted', { plain: true });
+  res.cookie('plaincookie2', { myData: 'is encrypted' }, { plain: true });
+
+  res.end('new cookies set');
+})
+
+app.get('/getcookies', function(req, res) {
+  console.log('Decrypted cookies: ', req.signedCookies)
+  console.log('Plain cookies: ', req.cookies)
+});
+```
+
+[You can find a ready-to-use example here](https://github.com/ebourmalo/feathers-mongoose-rest/tree/master/lib)
+Think about the `npm install` before running it ;)
+
 ## API
 
 ```js
@@ -39,36 +70,3 @@ Encrypt a cookie value and return it. An `options.algorithm` can optionaly be pa
 ### cookieEncrypter.decryptCookie(str, options)
 
 Decrypt a cookie value and return it. An `options.algorithm` can optionaly be passed to specify an algorithm to use for the decryption.
-
-## Example
-
-```js
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var cookieEncrypter = require('cookie-encrypter');
-var secretKey = 'foobarbaz12345';
-
-var app = express();
-app.use(cookieParser(secretKey));
-app.use(cookieEncrypter(secretKey));
-
-app.get('/setcookies', function(req, res) {
-  const cookieParams = {
-    httpOnly: true,
-    signed: true,
-    maxAge: 300000,
-  };
-
-  res.cookie('supercookie', 'my data is encrypted', cookieParams);
-  // OR ALTERNATIVELY
-  // res.cookie('supercookie', { myData: 'is encrypted' }, cookieParams);
-  
-  res.end('new cookie set (supercookie)');
-})
-
-app.get('/getcookies', function(req, res) {
-  console.log('Decrypted cookies: ', req.signedCookies)
-});
-
-app.listen(8080);
-```
