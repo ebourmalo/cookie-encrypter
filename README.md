@@ -41,21 +41,10 @@ app.get('/getcookies', function(req, res) {
 });
 ```
 
-[You can find a ready-to-use example here](https://github.com/ebourmalo/feathers-mongoose-rest/tree/master/lib)
+[You can find a ready-to-use example here](https://github.com/ebourmalo/cookie-encrypter/tree/master/example)
 Think about the `npm install` before running it ;)
 
 ## API
-
-```js
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var cookieEncrypter = require('cookie-encrypter');
-var secretKey = 'foobarbaz12345';
-
-var app = express();
-app.use(cookieParser(secretKey));
-app.use(cookieEncrypter(secretKey));
-```
 
 ### cookieEncrypter(secret, options)
 
