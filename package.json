@@ -4,7 +4,7 @@
   "description": "Transparently encrypt/decrypt your cookie with Nodejs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/ebourmalo/cookie-encrypter/issues"
   },
-  "homepage": "https://github.com/ebourmalo/cookie-encrypter#readme"
+  "homepage": "https://github.com/ebourmalo/cookie-encrypter#readme",
+  "devDependencies": {
+    "jest": "^22.4.4"
+  }
 }

@@ -21,8 +21,17 @@ function encryptCookie(str, options) {
     throw new TypeError('options.key argument is required to encryptCookie');
   }
 
-  var cipher = crypto.createCipher(options.algorithm || defaultAlgorithm, options.key);
-  var encrypted = cipher.update(str, 'utf8', 'hex') + cipher.final('hex');
+  var iv = crypto.randomBytes(16);
+  var cipher = crypto.createCipheriv(
+    options.algorithm || defaultAlgorithm,
+    options.key,
+    iv
+  );
+  var encrypted =
+    iv.toString('hex') +
+    ':' +
+    cipher.update(str, 'utf8', 'hex') +
+    cipher.final('hex');
 
   return encrypted;
 }
@@ -38,8 +47,15 @@ function encryptCookie(str, options) {
  * @return {String}
  */
 function decryptCookie(str, options) {
-  var decipher = crypto.createDecipher(options.algorithm || defaultAlgorithm, options.key);
-  var decrypted = decipher.update(str, 'hex', 'utf8') + decipher.final('utf8');
+  var encryptedArray = str.split(':');
+  var iv = new Buffer(encryptedArray[0], 'hex');
+  var encrypted = new Buffer(encryptedArray[1], 'hex');
+  var decipher = crypto.createDecipheriv(
+    options.algorithm || defaultAlgorithm,
+    options.key,
+    iv
+  );
+  var decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
 
   return decrypted;
 }
@@ -145,4 +161,3 @@ function cookieEncrypter(secret, _options) {
     next();
   };
 }
-
