@@ -1,28 +1,28 @@
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var cookieEncrypter = require('./cook');
-var secretKey = 'foobarbaz12345';
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const cookieEncrypter = require('../index')
+const secretKey = 'foobarbaz12345'
 
-var app = express();
-app.use(cookieParser(secretKey));
-app.use(cookieEncrypter(secretKey));
+const app = express()
+app.use(cookieParser(secretKey))
+app.use(cookieEncrypter(secretKey))
 
 app.get('/setcookies', function(req, res) {
   const cookieParams = {
     httpOnly: true,
     signed: true,
-    maxAge: 300000,
-  };
+    maxAge: 300000
+  }
 
   // Set encrypted cookies
-  res.cookie('supercookie', 'my text is encrypted', cookieParams);
-  res.cookie('supercookie2', { myData: 'is encrypted' }, cookieParams);
+  res.cookie('supercookie', 'my text is encrypted', cookieParams)
+  res.cookie('supercookie2', { myData: 'is encrypted' }, cookieParams)
 
   // You can still set plain cookies
-  res.cookie('plaincookie', 'my text is plain', { plain: true });
-  res.cookie('plaincookie2', { myData: 'is plain' }, { plain: true });
+  res.cookie('plaincookie', 'my text is plain', { plain: true })
+  res.cookie('plaincookie2', { myData: 'is plain' }, { plain: true })
 
-  res.end('new cookies set');
+  res.end('new cookies set')
 })
 
 app.get('/getcookies', function(req, res) {
@@ -33,7 +33,6 @@ app.get('/getcookies', function(req, res) {
     encryptedCookies: req.signedCookies,
     plainCookies: req.cookies    
   })
-});
+})
 
-app.listen(8080);
-
+app.listen(8080)

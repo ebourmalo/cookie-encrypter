@@ -1,10 +1,10 @@
-var crypto = require('crypto');
-var util = require('util');
-var defaultAlgorithm = 'aes256';
+const crypto = require('crypto')
+const util = require('util')
+const defaultAlgorithm = 'aes256'
 
-module.exports = cookieEncrypter;
-module.exports.encryptCookie = encryptCookie;
-module.exports.decryptCookie = decryptCookie;
+module.exports = cookieEncrypter
+module.exports.encryptCookie = encryptCookie
+module.exports.decryptCookie = decryptCookie
 
 /**
  * Encrypt cookie string
@@ -18,22 +18,23 @@ module.exports.decryptCookie = decryptCookie;
  */
 function encryptCookie(str, options) {
   if (!options.key) {
-    throw new TypeError('options.key argument is required to encryptCookie');
+    throw new TypeError('options.key argument is required to encryptCookie')
   }
 
-  var iv = crypto.randomBytes(16);
-  var cipher = crypto.createCipheriv(
+  const iv = crypto.randomBytes(16)
+  const cipher = crypto.createCipheriv(
     options.algorithm || defaultAlgorithm,
     options.key,
     iv
-  );
-  var encrypted =
-    iv.toString('hex') +
-    ':' +
-    cipher.update(str, 'utf8', 'hex') +
-    cipher.final('hex');
+  )
+  const encrypted = [
+    iv.toString('hex'),
+    ':',
+    cipher.update(str, 'utf8', 'hex'),
+    cipher.final('hex')
+  ]
 
-  return encrypted;
+  return encrypted.join('')
 }
 
 /**
@@ -47,17 +48,17 @@ function encryptCookie(str, options) {
  * @return {String}
  */
 function decryptCookie(str, options) {
-  var encryptedArray = str.split(':');
-  var iv = new Buffer(encryptedArray[0], 'hex');
-  var encrypted = new Buffer(encryptedArray[1], 'hex');
-  var decipher = crypto.createDecipheriv(
+  const encryptedArray = str.split(':')
+  const iv = new Buffer(encryptedArray[0], 'hex')
+  const encrypted = new Buffer(encryptedArray[1], 'hex')
+  const decipher = crypto.createDecipheriv(
     options.algorithm || defaultAlgorithm,
     options.key,
     iv
-  );
-  var decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
+  )
+  const decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8')
 
-  return decrypted;
+  return decrypted
 }
 
 /**
@@ -71,30 +72,25 @@ function decryptCookie(str, options) {
  * @return {Object}
  */
 function decryptCookies(obj, options) {
-  var cookies = Object.keys(obj);
-  var key;
-  var val;
-  var i;
+  const cookies = Object.keys(obj)
 
-  for (i = 0; i < cookies.length; i++) {
-    key = cookies[i];
-
-    if (typeof obj[key] !== 'string' || obj[key].substr(0, 2) !== 'e:') {
-      continue;
+  Object.keys(cookies).forEach(key => {
+    const originalValue = obj[key]
+    if (typeof originalValue !== 'string' || originalValue.substr(0, 2) !== 'e:') {
+      return
     }
 
     try {
-      val = decryptCookie(obj[key].slice(2), options);
+      const val = decryptCookie(originalValue.slice(2), options)
+      if (val) {
+        obj[key] = JSONCookie(val)
+      }
     } catch (error) {
-      continue;
+      return
     }
+  })
 
-    if (val) {
-      obj[key] = JSONCookie(val);
-    }
-  }
-
-  return obj;
+  return obj
 }
 
 /**
@@ -106,13 +102,13 @@ function decryptCookies(obj, options) {
  */
 function JSONCookie(str) {
   if (typeof str !== 'string' || str.substr(0, 2) !== 'j:') {
-    return str;
+    return str
   }
 
   try {
-    return JSON.parse(str.slice(2));
+    return JSON.parse(str.slice(2))
   } catch (err) {
-    return str;
+    return str
   }
 }
 
@@ -124,40 +120,40 @@ function JSONCookie(str) {
 function cookieEncrypter(secret, _options) {
   const defaultOptions = {
     algorithm: 'aes256',
-    key: secret,
-  };
+    key: secret
+  }
 
   const options = typeof _options === 'object'
     ? util._extend(defaultOptions, _options)
-    : defaultOptions;
+    : defaultOptions
 
-  return function cookieEncrypter(req, res, next) {
-    var originalResCookie = res.cookie;
+  return (req, res, next) => {
+    const originalResCookie = res.cookie
 
-    res.cookie = function (name, value, opt) {
+    res.cookie = (name, value, opt) => {
       if (typeof opt === 'object' && opt.plain) {
-        return originalResCookie.call(res, name, value, opt);
+        return originalResCookie.call(res, name, value, opt)
       }
 
-      var val = typeof value === 'object'
+      const val = typeof value === 'object'
         ? 'j:' + JSON.stringify(value)
-        : String(value);
+        : String(value)
 
       try {
-        val = 'e:' + encryptCookie(val, options);
+        val = 'e:' + encryptCookie(val, options)
       } catch (error) {}
 
-      return originalResCookie.call(res, name, val, opt);
-    };
+      return originalResCookie.call(res, name, val, opt)
+    }
 
     if (req.cookies) {
-      req.cookies = decryptCookies(req.cookies, options);
+      req.cookies = decryptCookies(req.cookies, options)
     }
 
     if (req.signedCookies) {
-      req.signedCookies = decryptCookies(req.signedCookies, options);
+      req.signedCookies = decryptCookies(req.signedCookies, options)
     }
 
-    next();
-  };
+    next()
+  }
 }
