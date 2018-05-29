@@ -3,18 +3,18 @@ const cookieParser = require('cookie-parser')
 const cookieEncrypter = require('../index')
 // we use a 32bits long secret key (with aes256)
 const secretKey = 'foobarbaz1234567foobarbaz1234567'
+const cookieParams = {
+  httpOnly: true,
+  signed: true,
+  maxAge: 300000
+}
 
 const app = express()
 app.use(cookieParser(secretKey))
+// use it as a simple middleware
 app.use(cookieEncrypter(secretKey))
 
-app.get('/setcookies', function(req, res) {
-  const cookieParams = {
-    httpOnly: true,
-    signed: true,
-    maxAge: 300000
-  }
-
+app.get('/setcookies', (req, res) => {
   // Set encrypted cookies
   res.cookie('supercookie', 'my text is encrypted', cookieParams)
   res.cookie('supercookie2', { myData: 'is encrypted' }, cookieParams)
@@ -26,7 +26,7 @@ app.get('/setcookies', function(req, res) {
   res.json({ status: 'updated' })
 })
 
-app.get('/getcookies', function(req, res) {
+app.get('/getcookies', (req, res) => {
   console.log('Decrypted cookies: ', req.signedCookies)
   console.log('Plain cookies: ', req.cookies)
 

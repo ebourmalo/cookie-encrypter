@@ -17,37 +17,42 @@ $ npm install cookie-encrypter
 
 Easy to use:
 ```js
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const cookieEncrypter = require('./cook');
-const app = express();
-const secretKey = 'foobarbaz12345';
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const cookieEncrypter = require('cookie-encrypter')
+// we use a 32bits long secret key (with aes256)
+const secretKey = 'foobarbaz1234567foobarbaz1234567'
+const cookieParams = {
+  httpOnly: true,
+  signed: true,
+  maxAge: 300000
+}
 
-app.use(cookieParser(secretKey));
-app.use(cookieEncrypter(secretKey));
+const app = express()
+app.use(cookieParser(secretKey))
+// use it as a simple middleware
+app.use(cookieEncrypter(secretKey))
 
-app.get('/setcookies', function(req, res) {
-  const cookieParams = {
-    httpOnly: true,
-    signed: true,
-    maxAge: 300000,
-  };
-
+app.get('/setcookies', (req, res) => {
   // Set encrypted cookies
-  res.cookie('supercookie', 'my text is encrypted', cookieParams);
-  res.cookie('supercookie2', { myData: 'is encrypted' }, cookieParams);
+  res.cookie('supercookie', 'my text is encrypted', cookieParams)
+  res.cookie('supercookie2', { myData: 'is encrypted' }, cookieParams)
 
   // You can still set plain cookies
-  res.cookie('plaincookie', 'my text is plain', { plain: true });
-  res.cookie('plaincookie2', { myData: 'is plain' }, { plain: true });
+  res.cookie('plaincookie', 'my text is plain', { plain: true })
+  res.cookie('plaincookie2', { myData: 'is plain' }, { plain: true })
 
-  res.end('new cookies set');
+  res.json({ status: 'updated' })
 })
 
-app.get('/getcookies', function(req, res) {
+app.get('/getcookies', (req, res) => {
   console.log('Decrypted cookies: ', req.signedCookies)
   console.log('Plain cookies: ', req.cookies)
-});
+
+  res.json({ status: 'ok' })
+})
+
+app.listen(8080)
 ```
 
 [You can find a ready-to-use example here](https://github.com/ebourmalo/cookie-encrypter/tree/master/example)
