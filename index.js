@@ -6,6 +6,17 @@ module.exports = cookieEncrypter
 module.exports.encryptCookie = encryptCookie
 module.exports.decryptCookie = decryptCookie
 
+function ensureProperOptions(algorithm, key) {
+  if (!key) {
+    throw new TypeError('options.key argument is required to encrypt a string')
+  }
+
+  if (algorithm === 'aes256' && key.length !== 32) {
+    const errorLabel = `A 32-bits key must be used with aes256. Given: ${key.length} (${key}-bits)`
+    throw new Error(errorLabel)
+  }
+}
+
 /**
  * Encrypt cookie string
  *
@@ -16,15 +27,16 @@ module.exports.decryptCookie = decryptCookie
  *
  * @return {String}
  */
-function encryptCookie(str, options) {
-  if (!options.key) {
-    throw new TypeError('options.key argument is required to encryptCookie')
-  }
+function encryptCookie(str, options = {}) {
+  const key = options.key
+  const algorithm = options.algorithm || defaultAlgorithm
+
+  ensureProperOptions(algorithm, key)
 
   const iv = crypto.randomBytes(16)
   const cipher = crypto.createCipheriv(
-    options.algorithm || defaultAlgorithm,
-    options.key,
+    algorithm,
+    key,
     iv
   )
   const encrypted = [
@@ -48,14 +60,15 @@ function encryptCookie(str, options) {
  * @return {String}
  */
 function decryptCookie(str, options) {
+  const key = options.key
+  const algorithm = options.algorithm || defaultAlgorithm
+
+  ensureProperOptions(algorithm, key)
+
   const encryptedArray = str.split(':')
   const iv = new Buffer(encryptedArray[0], 'hex')
   const encrypted = new Buffer(encryptedArray[1], 'hex')
-  const decipher = crypto.createDecipheriv(
-    options.algorithm || defaultAlgorithm,
-    options.key,
-    iv
-  )
+  const decipher = crypto.createDecipheriv(algorithm, key, iv)
   const decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8')
 
   return decrypted
@@ -72,9 +85,9 @@ function decryptCookie(str, options) {
  * @return {Object}
  */
 function decryptCookies(obj, options) {
-  const cookies = Object.keys(obj)
+  const cookies = {}
 
-  Object.keys(cookies).forEach(key => {
+  Object.keys(obj).forEach(key => {
     const originalValue = obj[key]
     if (typeof originalValue !== 'string' || originalValue.substr(0, 2) !== 'e:') {
       return
@@ -83,14 +96,14 @@ function decryptCookies(obj, options) {
     try {
       const val = decryptCookie(originalValue.slice(2), options)
       if (val) {
-        obj[key] = JSONCookie(val)
+        cookies[key] = JSONCookie(val)
       }
     } catch (error) {
       return
     }
   })
 
-  return obj
+  return Object.assign(obj, cookies)
 }
 
 /**
@@ -127,6 +140,15 @@ function cookieEncrypter(secret, _options) {
     ? util._extend(defaultOptions, _options)
     : defaultOptions
 
+  // try an encryption to ensure options are properly set
+  try {
+    encryptCookie('initialization test', options)
+  } catch(error) {
+    console.error(`[cookie-encrypter] ${error}. Could not initialize cookie-encrypter with options:`, options)
+
+    throw error
+  }
+
   return (req, res, next) => {
     const originalResCookie = res.cookie
 
@@ -136,14 +158,11 @@ function cookieEncrypter(secret, _options) {
       }
 
       const val = typeof value === 'object'
-        ? 'j:' + JSON.stringify(value)
+        ? `j:${JSON.stringify(value)}`
         : String(value)
 
-      try {
-        val = 'e:' + encryptCookie(val, options)
-      } catch (error) {}
-
-      return originalResCookie.call(res, name, val, opt)
+      const encryptedVal = `e:${encryptCookie(val, options)}`
+      return originalResCookie.call(res, name, encryptedVal, opt)
     }
 
     if (req.cookies) {

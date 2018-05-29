@@ -1,7 +1,8 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const cookieEncrypter = require('../index')
-const secretKey = 'foobarbaz12345'
+// we use a 32bits long secret key (with aes256)
+const secretKey = 'foobarbaz1234567foobarbaz1234567'
 
 const app = express()
 app.use(cookieParser(secretKey))
@@ -22,7 +23,7 @@ app.get('/setcookies', function(req, res) {
   res.cookie('plaincookie', 'my text is plain', { plain: true })
   res.cookie('plaincookie2', { myData: 'is plain' }, { plain: true })
 
-  res.end('new cookies set')
+  res.json({ status: 'updated' })
 })
 
 app.get('/getcookies', function(req, res) {

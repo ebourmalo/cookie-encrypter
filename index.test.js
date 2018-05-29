@@ -6,7 +6,7 @@ describe('encryptCookie', () => {
   function testEncyryptCookie(algorithm, keyLengthBytes) {
     const randomArrayString = Array.from({length: 40}, () => crypto.randomBytes(Math.floor(1 + Math.random() * 1000)).toString('hex'))
     randomArrayString.forEach(strToEncrypt => {
-      it('can encode an string with a keyLengthBytes bytes key', () => {
+      it(`can encode an string with a ${keyLengthBytes} bytes key`, () => {
         const key = crypto.randomBytes(keyLengthBytes)
         expect(typeof encryptCookie(strToEncrypt, { algorithm, key })).toBe('string')
       })
@@ -36,9 +36,9 @@ describe('encryptCookie', () => {
   })
 })
 
-describe('descryptCookie', () => {
+describe('decryptCookie', () => {
   function testDecryptCookie(algorithm, keyLengthBytes) {
-    it('can decode a string whilse using the good key', () => {
+    it('can decode a string while using the good key', () => {
       const originalStr = crypto.randomBytes(Math.floor(1 + Math.random() * 1000)).toString('hex')
       const key = crypto.randomBytes(keyLengthBytes)
       const encyptedStr = encryptCookie(originalStr, { algorithm, key })
@@ -46,12 +46,23 @@ describe('descryptCookie', () => {
       expect(decryptCookie(encyptedStr, { algorithm, key })).toEqual(originalStr)
     })
 
-    it('throw error while using a bad key', () => {
+    it('throw an error while decrypting using a wrong key', () => {
       const originalStr = crypto.randomBytes(Math.floor(1 + Math.random() * 1000)).toString('hex')
       const key = crypto.randomBytes(keyLengthBytes)
+      const wrongKey = crypto.randomBytes(keyLengthBytes)
       const encyptedStr = encryptCookie(originalStr, { algorithm, key })
 
-      expect(() => decryptCookie(encyptedStr, { algorithm, key: crypto.randomBytes(keyLengthBytes) })).toThrow()
+      expect(() => decryptCookie(encyptedStr, { algorithm, key: wrongKey })).toThrow()
+    })
+
+    it('throw an error while decrypting using a wrong-length key', () => {
+      const originalStr = crypto.randomBytes(Math.floor(1 + Math.random() * 1000)).toString('hex')
+      // use a different length
+      const key = crypto.randomBytes(keyLengthBytes)
+      const wrongSizeKey = key.toString('hex').substr(2)
+      const encyptedStr = encryptCookie(originalStr, { algorithm, key })
+
+      expect(() => decryptCookie(encyptedStr, { algorithm, key: wrongKey })).toThrow()
     })
   }
 
